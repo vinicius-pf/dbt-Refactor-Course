@@ -1,4 +1,4 @@
-ID,ORDERID,PAYMENTMETHOD,STATUS,AMOUNT,CREATED
+id,orderid,paymentmethod,status,amount,created
 1,1,credit_card,success,1000,2018-01-01
 2,2,credit_card,success,2000,2018-01-02
 3,3,coupon,success,100,2018-01-04
