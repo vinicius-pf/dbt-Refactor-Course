@@ -1,25 +1,25 @@
 WITH paid_orders as (select Orders.ID as order_id,
     Orders.USER_ID	as customer_id,
     Orders.ORDER_DATE AS order_placed_at,
-        Orders.STATUS AS order_status,
+    Orders.STATUS AS order_status,
     p.total_amount_paid,
     p.payment_finalized_date,
     C.FIRST_NAME    as customer_first_name,
-        C.LAST_NAME as customer_last_name
-FROM dev_vinicius_refactor.raw_orders as orders
+    C.LAST_NAME as customer_last_name
+FROM main.orders as orders
 left join (select ORDERID as order_id, max(CREATED) as payment_finalized_date, sum(AMOUNT) / 100.0 as total_amount_paid
-        from dev_vinicius_refactor.raw_payments
+        from main.payments
         where STATUS <> 'fail'
         group by 1) p ON orders.ID = p.order_id
-left join dev_vinicius_refactor.raw_customers C on orders.USER_ID = C.ID ),
+left join main.customers C on orders.USER_ID = C.ID ),
 
 customer_orders 
 as (select C.ID as customer_id
     , min(ORDER_DATE) as first_order_date
     , max(ORDER_DATE) as most_recent_order_date
     , count(ORDERS.ID) AS number_of_orders
-from dev_vinicius_refactor.raw_customers C 
-left join dev_vinicius_refactor.raw_orders as Orders
+from main.customers C 
+left join main.orders as Orders
 on orders.USER_ID = C.ID 
 group by 1)
 
@@ -44,4 +44,4 @@ LEFT OUTER JOIN
     group by 1
     order by p.order_id
 ) x on x.order_id = p.order_id
-ORDER BY order_id
+ORDER BY x.order_id
