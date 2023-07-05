@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: main
+    tables:
+    - name: customers
+      description: Raw data from the course. It stores customer information
+
+    - name: orders 
+      description: Raw data from the course. It stores order information
+
+    - name: payments  
+      description: Raw data from the course. It stores payment information
+
