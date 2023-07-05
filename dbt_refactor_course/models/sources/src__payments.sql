@@ -1,4 +1,4 @@
-with import as (
+with base_payments as (
     select 
         ORDERID as order_id
         ,max(CREATED) as payment_finalized_date
@@ -8,4 +8,4 @@ with import as (
 
 )
 
-select * from import
+select * from base_payments

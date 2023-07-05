@@ -1,4 +1,4 @@
-with import as (
+with base_orders as (
     select 
         ID as order_id
         ,USER_ID	as customer_id
@@ -8,4 +8,4 @@ with import as (
 
 )
 
-select * from import
+select * from base_orders
