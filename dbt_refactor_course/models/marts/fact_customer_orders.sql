@@ -1,44 +1,19 @@
 WITH 
-/*Import CTEs*/
-
-customers as (
-    select *
-    from {{ref('src__customers')}}
-)
-
-, payments as (
-    select *
-    from {{ref('src__payments')}}
-)
-
-, orders as (
-    select *
-    from {{ref('src__orders')}}
-)
 
 /*Cosmetic CleanUps and CTE grouping*/
 
-
-
-, base_paid_orders as (
+ base_paid_orders as (
     select *
     from {{ref('paid_orders')}}
 )
 
 
-, customer_orders  as (
-    select 
-        customers.customer_id
-        , min(orders.order_placed_at) as first_order_date
-        , max(orders.order_placed_at) as most_recent_order_date
-        , count(orders.order_id) AS number_of_orders
-    from customers  
-    left join orders 
-    on orders.customer_id = customers.customer_id  
-    group by 1
+, base_customer_orders  as (
+    select *
+    from {{ref('customer_orders')}} 
 )
 
-, x as (
+, total_amount_per_order as (
     select
         p.order_id,
         sum(t2.total_amount_paid) as clv_bad
@@ -63,9 +38,9 @@ ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY p.order_id) as customer_sal
 CASE WHEN c.first_order_date = p.order_placed_at
 THEN 'new'
 ELSE 'return' END as nvsr,
-x.clv_bad as customer_lifetime_value,
+total_amount_per_order.clv_bad as customer_lifetime_value,
 c.first_order_date as fdos
 FROM base_paid_orders p
-left join customer_orders as c USING (customer_id)
-LEFT OUTER JOIN x on x.order_id = p.order_id
-ORDER BY x.order_id
+left join base_customer_orders as c USING (customer_id)
+LEFT OUTER JOIN total_amount_per_order on total_amount_per_order.order_id = p.order_id
+ORDER BY total_amount_per_order.order_id
