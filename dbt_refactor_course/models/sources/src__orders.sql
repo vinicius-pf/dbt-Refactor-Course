@@ -1,9 +1,9 @@
 with base_orders as (
     select 
-        ID as order_id
-        ,USER_ID	as customer_id
-        ,ORDER_DATE AS order_placed_at
-        ,STATUS AS order_status
+        id as order_id
+        ,user_id	as customer_id
+        ,order_date AS order_placed_at
+        ,status AS order_status
     from {{source('main', 'orders')}}
 
 )
